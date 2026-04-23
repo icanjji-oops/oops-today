@@ -1,0 +1,12 @@
+
+.granite
+# 의존성 폴더 (절대 올리면 안 됨)
+node_modules/
+
+# 빌드 결과물 및 압축 파일
+dist/
+*.ait
+
+# 환경 변수 (보안)
+.env.local
+.env

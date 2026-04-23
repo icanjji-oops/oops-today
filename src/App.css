@@ -1,0 +1,112 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: #F2F4F6; font-family: 'Pretendard', sans-serif; color: #191F28; }
+
+.toss-wrapper { display: flex; justify-content: center; min-height: 100vh; }
+.toss-container { width: 100%; max-width: 500px; background-color: #F2F4F6; min-height: 100vh; }
+
+/* Header */
+.header {
+    background: white;
+    padding: 40px 24px 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.safe-badge {
+    font-size: 11px;
+    background: #F2F4F6;
+    color: #4E5968;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+/* Tabs */
+.tabs { display: flex; background: white; padding: 0 10px; }
+.tabs button { 
+  flex: 1; padding: 16px; border: none; background: none; 
+  font-size: 16px; color: #8B95A1; font-weight: 600; cursor: pointer;
+  transition: 0.2s;
+}
+.tabs button.active { color: #3182F6; border-bottom: 3px solid #3182F6; }
+
+/* Main Section */
+.main-content { padding: 20px; }
+.input-card { 
+  background: white; border-radius: 24px; padding: 24px; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px;
+  position: relative;
+}
+textarea { 
+  width: 100%; min-height: 120px; border: none; background: #F9FAFB; 
+  border-radius: 16px; padding: 20px; font-size: 16px; outline: none; margin-bottom: 16px;
+  font-family: inherit;
+}
+.button-group { display: flex; gap: 12px; }
+
+/* Feed List */
+.post-card { 
+  background: white; border-radius: 24px; padding: 24px; margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+}
+.post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.post-score-badge { 
+  background: #FFF0F0; color: #F04452; padding: 4px 10px; 
+  border-radius: 8px; font-size: 12px; font-weight: 800;
+}
+
+/* 사진 업로드 */
+.input-photo-container {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    padding-top: 8px; border-top: 1px solid #F2F4F6;
+}
+.btn-photo {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #F9FAFB; color: #4E5968; border: 1px solid #E5E8EB;
+    padding: 10px 16px; border-radius: 12px; font-size: 14px;
+    font-weight: 600; cursor: pointer; transition: background 0.2s;
+}
+.btn-photo:hover { background: #F2F4F6; }
+.input-file-hidden { display: none; }
+.photo-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 1px solid #E5E8EB; }
+.post-photo { width: 100%; height: auto; border-radius: 16px; margin-bottom: 20px; display: block; }
+
+/* Actions */
+.post-actions { display: flex; gap: 16px; border-top: 1px solid #F2F4F6; padding-top: 16px; }
+.action-item { 
+  background: none; border: none; color: #4E5968; 
+  font-size: 14px; font-weight: 600; cursor: pointer; 
+  display: flex; align-items: center; gap: 4px; padding: 8px 4px;
+}
+.action-item:active { transform: scale(0.95); }
+.count { color: #3182F6; font-weight: 800; }
+
+/* Hall of Fame */
+.hall-of-fame-section { margin-bottom: 24px; }
+.hall-scroll-container {
+    display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;
+    -ms-overflow-style: none; scrollbar-width: none;
+}
+.hall-scroll-container::-webkit-scrollbar { display: none; }
+.hall-card {
+    min-width: 160px; max-width: 160px;
+    background: linear-gradient(135deg, #ffffff 0%, #f2f8ff 100%);
+    border: 1.5px solid #E8F3FF; border-radius: 18px; padding: 16px;
+    cursor: pointer; transition: transform 0.2s;
+}
+.hall-card:active { transform: scale(0.96); }
+.hall-tag {
+    font-size: 10px; font-weight: 800; color: #3182F6;
+    background: #E8F3FF; display: inline-block; padding: 2px 6px;
+    border-radius: 4px; margin-bottom: 8px;
+}
+.hall-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #8B95A1; }
+
+/* Comments */
+.comment-box { background: #F9FAFB; border-radius: 12px; padding: 12px; margin-top: 16px; }
+.comment-input-row { display: flex; gap: 8px; margin-top: 16px; }
+.comment-input-row input { 
+  flex: 1; background: #F2F4F6; border: none; padding: 10px 14px; 
+  border-radius: 10px; font-size: 13px; outline: none;
+}
+.comment-input-row button { background: none; border: none; color: #3182F6; font-weight: 700; font-size: 13px; cursor: pointer; }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './supabase'; 
 import { Button, Text, Spacing } from '@toss/tds-mobile';
 import { colors } from '@toss/tds-colors';
-import { useInAppAds } from './hooks/useInAppAds'; // 토스 공식 광고 훅
+import { useInAppAds } from './hooks/useInAppAds';
 import './App.css';
 
 function App() {
@@ -14,8 +14,10 @@ function App() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // 토스 공식 광고 함수 가져오기
   const { showInterstitialAd } = useInAppAds();
+
+  // 🚫 비속어 리스트 (필요에 따라 단어를 추가하세요)
+  const badWords = ['바보', '멍청이', '나쁜놈', '욕설1', '비방1'];
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -39,14 +41,49 @@ function App() {
     }
   };
 
+  const generateNickname = (content: string, category: string) => {
+    if (content.includes('주식') || content.includes('코인') || content.includes('돈') || content.includes('삼성')) {
+      return '자본주의가낳은괴물';
+    }
+    if (content.includes('지하철') || content.includes('버스') || content.includes('택시') || content.includes('지각')) {
+      return '대중교통유랑자';
+    }
+    if (content.includes('남친') || content.includes('여친') || content.includes('고백') || content.includes('사랑')) {
+      return '고백공격수';
+    }
+    if (content.includes('넘어') || content.includes('쏟') || content.includes('깨') || content.includes('우당탕')) {
+      return '인간우당탕';
+    }
+    if (content.includes('술') || content.includes('맥주') || content.includes('회식')) {
+      return '만취인멜로디';
+    }
+
+    const nicknames: Record<string, string[]> = {
+      economic: ['텅장수호자', '마이너스손', '파산1초전'],
+      love: ['이불킥마스터', '흑역사제조기', '추억조작범'],
+      daily: ['프로실수러', '덤벙이', '앗차봇']
+    };
+
+    const categoryNicknames = nicknames[category] || nicknames['daily'];
+    const randomIndex = Math.floor(Math.random() * categoryNicknames.length);
+    return categoryNicknames[randomIndex];
+  };
+
   const handleRegister = async () => {
     if (!score) return alert("지수를 먼저 측정해주세요!");
+
+    // 글 내용 비속어 체크
+    if (badWords.some(word => content.includes(word))) {
+      return alert("부적절한 단어가 포함되어 사연을 등록할 수 없습니다. 🤫");
+    }
+
+    const randomUser = generateNickname(content, tab);
 
     const { error } = await supabase
       .from('posts')
       .insert([{
         tab: tab,
-        user: '나의 앗차',
+        user: randomUser,
         text: content,
         score: score,
         hearts: 0,
@@ -59,7 +96,7 @@ function App() {
       setScore(null);
       setPhotoUrl(null);
       fetchPosts();
-      alert("글이 등록되었습니다! 🤪");
+      alert(`[${randomUser}] 님으로 등록 완료! 🤪`);
     } else {
       console.error("등록 에러 상세:", error);
       alert(`등록 실패: ${error.message}`);
@@ -86,28 +123,22 @@ function App() {
     if (!isConfirm) return;
 
     const { error } = await supabase.from('posts').delete().eq('id', postId);
-
     if (!error) {
       alert("글이 삭제되었습니다.");
       fetchPosts();
     }
   };
 
-  // 💸 실제 수익 창출(제휴 링크) 및 토스 광고 실행 함수
   const handleAdClick = async (currentTab: string) => {
-    // 1. 먼저 제공해주신 제휴 링크를 새 창으로 띄웁니다.
     let adUrl = '';
     if (currentTab === 'economic') {
-      adUrl = 'https://link.coupang.com/a/evkVt9'; // 재테크 도서
+      adUrl = 'https://link.coupang.com/a/evkVt9';
     } else if (currentTab === 'love') {
-      adUrl = 'https://link.coupang.com/a/evkYOO'; // 극세사 이불
+      adUrl = 'https://link.coupang.com/a/evkYOO';
     } else {
-      adUrl = 'https://link.coupang.com/a/evk1q7'; // 구급상자
+      adUrl = 'https://link.coupang.com/a/evk1q7';
     }
     window.open(adUrl, '_blank');
-
-    // 2. (선택사항) 토스 공식 전면 광고도 함께 띄우고 싶다면 아래 주석을 해제하세요.
-    // try { await showInterstitialAd('내-광고-단위-ID'); } catch (e) {}
   };
 
   const toggleHeart = async (postId: number, currentHearts: number) => {
@@ -121,12 +152,32 @@ function App() {
   const addComment = async (postId: number, currentComments: string[]) => {
     const text = commentInputs[postId];
     if (!text) return;
+
+    // 🛡️ 댓글 비속어 필터링
+    if (badWords.some(word => text.includes(word))) {
+      return alert("비방이나 욕설이 포함된 댓글은 작성할 수 없습니다. 🚫");
+    }
+
     const updatedComments = currentComments ? [...currentComments, text] : [text];
     const { error } = await supabase.from('posts').update({ comments: updatedComments }).eq('id', postId);
     if (!error) {
       setCommentInputs({ ...commentInputs, [postId]: '' });
       fetchPosts();
     }
+  };
+
+  // 👑 관리자용 댓글 삭제 함수
+  const deleteComment = async (postId: number, commentIndex: number, currentComments: string[]) => {
+    const isConfirm = window.confirm("이 댓글을 삭제하시겠어요?");
+    if (!isConfirm) return;
+
+    const updatedComments = currentComments.filter((_, i) => i !== commentIndex);
+    const { error } = await supabase
+      .from('posts')
+      .update({ comments: updatedComments })
+      .eq('id', postId);
+
+    if (!error) fetchPosts();
   };
 
   const hallOfFame = [...posts].filter(p => p.hearts > 0).sort((a, b) => b.hearts - a.hearts).slice(0, 3);
@@ -196,7 +247,7 @@ function App() {
                     <span className="post-score-badge">{post.score}점</span>
                   </div>
                   {isAdmin && (
-                    <button onClick={() => deletePost(post.id)} style={{ border: 'none', background: 'transparent', color: '#F04452', fontSize: '13px', fontWeight: 'bold' }}>
+                    <button onClick={() => deletePost(post.id)} style={{ border: 'none', background: 'transparent', color: '#F04452', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>
                       삭제
                     </button>
                   )}
@@ -207,11 +258,25 @@ function App() {
                   <button className="action-item" onClick={() => toggleHeart(post.id, post.hearts)}>❤️ 웃퍼요 <span className="count">{post.hearts || 0}</span></button>
                   <button className="action-item">💬 댓글 {post.comments?.length || 0}</button>
                 </div>
+
+                {/* 댓글 목록 영역 */}
                 <div className="comment-box">
                   {post.comments?.map((c: string, i: number) => (
-                    <Text key={i} typography="t7" color={colors.grey700} style={{ marginBottom: 6 }}>💬 {c}</Text>
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <Text typography="t7" color={colors.grey700}>💬 {c}</Text>
+                      {/* 👑 관리자일 때만 댓글 옆에 삭제 버튼 표시 */}
+                      {isAdmin && (
+                        <button
+                          onClick={() => deleteComment(post.id, i, post.comments)}
+                          style={{ border: 'none', background: 'transparent', color: '#B0B8C1', fontSize: '11px', cursor: 'pointer' }}
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
+
                 <div className="comment-input-row">
                   <input
                     placeholder="댓글 입력..."
@@ -223,7 +288,6 @@ function App() {
                 </div>
               </div>
 
-              {/* 💸 맞춤형 수익 광고 배너 (게시글 2개마다 노출) */}
               {(index + 1) % 2 === 0 && (
                 <div className="ad-card" onClick={() => handleAdClick(tab)}>
                   <span className="ad-badge">앗차! 맞춤 추천</span>

@@ -135,3 +135,20 @@ textarea {
   width: fit-content;
   margin-bottom: 8px;
 }
+
+/* 광고 부스터 버튼 & 공유 버튼 추가 스타일 */
+.btn-ad-boost {
+  flex: 1.5;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 12px;
+  transition: 0.2s;
+  font-size: 14px;
+}
+.btn-ad-boost:active { transform: scale(0.98); }
+
+.action-item.share { color: #00C73C; } /* 카카오톡 연상 컬러 */

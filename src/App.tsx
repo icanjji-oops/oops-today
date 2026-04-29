@@ -14,8 +14,8 @@ function App() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // 🚀 보상형 광고 훅 사용
-  const { showRewardedAd } = useInAppAds();
+  // 🚀 전면 광고 훅 사용
+  const { showInterstitialAd } = useInAppAds();
 
   const badWords = ['바보', '멍청이', '나쁜놈', '욕설1', '비방1'];
 
@@ -87,8 +87,8 @@ function App() {
     if (badWords.some(word => content.includes(word))) return alert("부적절한 단어가 포함되어 사연을 등록할 수 없습니다. 🤫");
 
     try {
-      // 🚀 실제 라이브 광고 ID 적용 완료 (출시용)
-      await showRewardedAd('ait.v2.live.5ae4abe4d1814715');
+ // 🚀 showRewardedAd 대신 showInterstitialAd(전면 광고) 함수를 사용합니다!
+       await showInterstitialAd('ait.v2.live.5ae4abe4d1814715');
       const boostedScore = score * 2;
       alert(`🎉 잭팟! 실수 지수가 ${boostedScore}점으로 2배 뻥튀기 되었습니다! 명예의 전당을 노려보세요!`);
       await handleRegister(boostedScore);

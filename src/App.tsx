@@ -135,7 +135,7 @@ const handleShare = async (post: any) => {
       setIsAdmin(false);
       alert("관리자 모드가 종료되었습니다.");
     } else {
-      const pw = prompt("관리자 비밀번호를 입력하세요. (초기비밀번호: 9523)");
+      const pw = prompt("관리자 비밀번호를 입력하세요. (초기비밀번호: 9xxx)");
       if (pw === "9523") {
         setIsAdmin(true);
         alert("👑 관리자 권한이 활성화되었습니다!");

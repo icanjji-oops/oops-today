@@ -88,7 +88,9 @@ function App() {
 
     try {
  // 🚀 showRewardedAd 대신 showInterstitialAd(전면 광고) 함수를 사용합니다!
-       await showInterstitialAd('ait.v2.live.5ae4abe4d1814715');
+ //await showInterstitialAd('ait-ad-test-interstitial-id');
+
+       await showInterstitialAd('ait.v2.live.984daa383aa54cf6');
       const boostedScore = score * 2;
       alert(`🎉 잭팟! 실수 지수가 ${boostedScore}점으로 2배 뻥튀기 되었습니다! 명예의 전당을 노려보세요!`);
       await handleRegister(boostedScore);

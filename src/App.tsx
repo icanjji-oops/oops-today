@@ -15,7 +15,8 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   // 🚀 전면 광고 훅 사용
-  const { showInterstitialAd } = useInAppAds();
+  // 🟢 TO-BE (수정: 여기에 방금 만드신 전면 광고 ID를 넣고, showAd를 꺼냅니다)
+  const { showAd, isSupported } = useInAppAds('ait.v2.live.984daa383aa54cf6');
 
   const badWords = ['바보', '멍청이', '나쁜놈', '욕설1', '비방1'];
 
@@ -82,21 +83,25 @@ function App() {
     }
   };
 
+
+
+// 🟢 TO-BE (수정)
   const handleAdRegister = async () => {
     if (!score) return alert("지수를 먼저 측정해주세요!");
     if (badWords.some(word => content.includes(word))) return alert("부적절한 단어가 포함되어 사연을 등록할 수 없습니다. 🤫");
 
     try {
- // 🚀 showRewardedAd 대신 showInterstitialAd(전면 광고) 함수를 사용합니다!
- //await showInterstitialAd('ait-ad-test-interstitial-id');
+      // 🚀 올바른 이름인 showAd()를 호출합니다.
+      if (isSupported) {
+         showAd();
+      }
 
-       await showInterstitialAd('ait.v2.live.984daa383aa54cf6');
       const boostedScore = score * 2;
       alert(`🎉 잭팟! 실수 지수가 ${boostedScore}점으로 2배 뻥튀기 되었습니다! 명예의 전당을 노려보세요!`);
       await handleRegister(boostedScore);
     } catch (error) {
-      console.warn("광고 시청 실패:", error);
-      const isConfirm = window.confirm("광고를 끝까지 시청해야 점수가 2배가 됩니다. 일반 등록으로 진행할까요?");
+      console.warn("광고 에러:", error);
+      const isConfirm = window.confirm("광고를 확인해야 점수가 2배가 됩니다. 일반 등록으로 진행할까요?");
       if (isConfirm) await handleRegister(score);
     }
   };
